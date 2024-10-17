@@ -1,0 +1,180 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="arm_model">
+
+    <!-- Define some constants -->
+    <xacro:property name="link_length" value="1.0"/>
+    <xacro:property name="link_length_2" value="0.4"/>
+    <xacro:property name="link_radius_2" value="0.05"/>
+
+
+    <xacro:property name="link_radius" value="0.1"/>
+    <xacro:property name="joint_radius" value="0.2"/>
+    <xacro:property name="joint_length" value="0.1"/>
+
+    <xacro:property name="pi" value="3.141592653589793"/>
+    <xacro:property name="half_pi" value="1.5707963267948966"/>
+
+    <material name="blue">
+        <color rgba="0 0 1 1"/>
+    </material>
+    <material name="green">
+        <color rgba="0 1 0 1"/>
+    </material>
+    <material name="red">
+        <color rgba="1 0 0 1"/>
+    </material>
+
+    <!-- Base link -->
+    <link name="base_link">
+        <visual>
+        <geometry>
+            <cylinder length="0.01" radius="0.2"/>
+        </geometry>
+        <origin rpy="0 0 0" xyz="0 0 0"/>
+        <material name="red" />
+        </visual>
+    </link>
+
+    <!-- Base to torso joint -->
+    <joint name="base_torso_joint" type="fixed">
+        <origin xyz="0 0 ${link_length/2.0}" rpy="0 0 0"/>
+        <parent link="base_link"/>
+        <child link="torso_link"/>
+        <axis xyz="0 0 1"/>
+    </joint>
+    
+
+    <!-- Torso link -->
+    <link name="torso_link">
+        <visual>
+            <geometry>
+                <cylinder length="${link_length}" radius="${link_radius_2}"/>
+            </geometry>
+            <material name="red"/>
+        </visual>
+    </link>
+
+    <!-- Torso to Torso Reference joint -->
+    <joint name="torso_torsoref_joint" type="fixed">
+        <origin xyz="0 0 ${link_length/2.0}" rpy="0 0 0"/>
+        <parent link="torso_link"/>
+        <child link="torsoref_link"/>
+        <axis xyz="0 1 0"/>
+    </joint>
+
+    <!-- Torso Reference link -->
+    <link name="torsoref_link">
+        <visual>
+            <geometry>
+                <sphere radius="${link_radius_2}"/>
+            </geometry>
+            <material name="red"/>
+        </visual>
+    </link>
+
+    <!-- Torso to Trapezoidal joint -->
+    <joint name="torso_trapezoidal_joint" type="fixed">
+        <origin xyz="0 ${link_length_2/2.0} 0" rpy="-${half_pi} 0 0"/>
+        <parent link="torsoref_link"/>
+        <child link="trapezoidal_link"/>
+        <axis xyz="0 1 0"/>
+    </joint>
+
+    <!-- Trapezoidal link -->
+    <link name="trapezoidal_link">
+        <visual>
+            <geometry>
+                <cylinder length="${link_length_2}" radius="${link_radius_2}"/>
+            </geometry>
+            <material name="red"/>
+        </visual>
+    </link>
+
+    <!-- Trapezoidal to Trapezoidal Reference joint -->
+    <joint name="trapezoidal_trapezoidalref_joint" type="fixed">
+        <origin xyz="0 0 ${link_length_2/2.0}" rpy="0 0 0"/>
+        <parent link="trapezoidal_link"/>
+        <child link="trapezoidalref_link"/>
+        <axis xyz="0 0 1"/>
+    </joint>
+
+    <!-- Trapezoidal Reference link -->
+    <link name="trapezoidalref_link">
+        <visual>
+            <geometry>
+                <sphere radius="${link_radius_2}"/>
+            </geometry>
+            <material name="green"/>
+        </visual>
+    </link>
+
+    <!-- Trapezoidal to Upper Arm joint -->
+    <joint name="shoulder_1_joint" type="revolute">
+        <origin xyz="0 0 0" rpy="0 ${half_pi} 0"/>
+        <parent link="trapezoidalref_link"/>
+        <child link="upperarm_1_link"/>
+        <axis xyz="1 0 0"/>
+        <limit lower="-${pi}" upper="${pi}" effort="100" velocity="0.1"/>
+    </joint>
+
+
+    <!-- Upper Arm 1 Link -->
+    <link name="upperarm_1_link">
+        <visual>
+            <geometry>
+                <sphere radius="${link_radius_2}"/>
+            </geometry>
+            <origin rpy="0 0 0" xyz="0 0 0"/>
+            <material name="green"/>
+        </visual>
+    </link>
+
+    <!-- Upper Arm 1 to Upper Arm 2 joint -->
+    <joint name="shoulder_2_joint" type="revolute">
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <parent link="upperarm_1_link"/>
+        <child link="upperarm_2_link"/>
+        <axis xyz="0 1 0"/>
+        <limit lower="-${pi}" upper="${pi}" effort="100" velocity="0.1"/>
+    </joint>
+
+
+    <!-- Upper Arm 2 Link -->
+    <link name="upperarm_2_link">
+        <visual>
+            <geometry>
+                <sphere radius="${link_radius_2}"/>
+            </geometry>
+            <origin rpy="0 0 0" xyz="0 0 0"/>
+            <material name="green"/>
+
+        </visual>
+    </link>
+
+    <!-- Upper Arm 2 to Upper Arm 3 joint -->
+    <joint name="shoulder_3_joint" type="revolute">
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <parent link="upperarm_2_link"/>
+        <child link="upperarm_3_link"/>
+        <axis xyz="0 0 1"/>
+        <limit lower="-${pi}" upper="${pi}" effort="100" velocity="0.1"/>
+    </joint>
+
+
+     <!-- Upper Arm link  -->
+    <link name="upperarm_3_link">
+        <visual>
+            <geometry>
+                <cylinder length="${link_length_2}" radius="${link_radius_2}"/>
+            </geometry>
+            <material name="blue"/>
+            <origin rpy="0 0 0" xyz="0 0 ${link_length_2/2.0}"/>
+        </visual>
+    </link> 
+
+
+
+    
+
+
+</robot>

@@ -1,0 +1,18 @@
+<launch>
+    <!-- Include the robot description -->
+    <param name="robot_description" command="$(find xacro)/xacro '$(find arm_model)/urdf/arm.xacro'" />
+
+    <!-- Launch RViz -->
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find arm_model)/config/config.rviz" output="screen" />
+
+    <!-- Robot State Publisher -->
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" output="screen">
+        <param name="publish_frequency" type="double" value="50.0" />
+        <param name="tf_prefix" type="string" value="" />
+    </node>
+
+    <!-- Joint State Publisher with GUI sliders -->
+    <node name="joint_state_publisher_gui" pkg="joint_state_publisher_gui" type="joint_state_publisher_gui" output="screen">
+        <param name="use_gui" value="true" />
+    </node>
+</launch>
